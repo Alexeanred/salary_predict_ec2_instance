@@ -1,13 +1,16 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 import uvicorn
-from salary import Salary
 import pickle
-
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve(strict=True).parent
+class Salary(BaseModel):
+    YearsExperiences : float
 # Call constructor and assign to variable app
 app = FastAPI()
 
 # Load pre-trained model
-with open('salary_lr.pkl', 'rb') as file:
+with open(f'{BASE_DIR}/salary_lr.pkl', 'rb') as file:
     model = pickle.load(file)
 
 
@@ -32,11 +35,3 @@ def predict(data: Salary):
 
     return {"prediction": prediction.tolist()}
 
-
-# Run API
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
-
-
-# to run the main.py
-# uvicorn main:app --reload
